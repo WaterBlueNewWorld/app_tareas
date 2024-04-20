@@ -7,7 +7,7 @@ class InformacionUsuario extends ChangeNotifier {
   ColorScheme _temaClaroDefault = const ColorScheme.light();
   ColorScheme _temaObscuroDefault = const ColorScheme.dark();
 
-  /// p
+  /// Temas de la app inicializados en Palette builder
   ThemeMode get temaActual => _temaApp ?? ThemeMode.light;
   ColorScheme get temaClaroDefault => _temaClaroDefault;
   ColorScheme get temaObscuroDefault => _temaObscuroDefault;

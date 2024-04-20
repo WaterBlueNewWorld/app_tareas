@@ -27,6 +27,7 @@ class StatePaletteBuilder extends State<PaletteBuilder> {
     inicializarTemaUsuario();
   }
 
+  /// Esta funcion se encarga de generar el esquema de color acorde a la imagen
   Future<void> inicializarTemaUsuario() async {
     try {
       await generarColores().then((List<ColorScheme> list) {
@@ -37,6 +38,8 @@ class StatePaletteBuilder extends State<PaletteBuilder> {
     }
   }
 
+  /// Esta funcion usa una herramienta proveida por material para extraer un
+  /// esquema de color de una imagen
   Future<List<ColorScheme>> generarColores() async {
     ColorScheme paletaUsuarioLight = await ColorScheme.fromImageProvider(provider: widget.imagen, brightness: Brightness.light);
     ColorScheme paletaUsuarioDark = await ColorScheme.fromImageProvider(provider: widget.imagen, brightness: Brightness.dark);

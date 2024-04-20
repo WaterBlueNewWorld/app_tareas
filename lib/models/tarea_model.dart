@@ -14,6 +14,8 @@ class Tarea {
     required this.prioridad,
   });
 
+  /// Se hace uso del constructor factory para implementar el patron de diseño
+  /// factory y crear un modelo headless
   factory Tarea.fromJson(Map<String, dynamic> json) => Tarea(
     id: json['id'],
     titulo: json['nombre'],
@@ -21,6 +23,7 @@ class Tarea {
     prioridad: json['prioridad'].toString().toColor(),
   );
 
+  /// Map para guardar info en la db
   Map<String, dynamic> toJson() => {
     "nombre" : titulo,
     "completado" : completado.toInt(),

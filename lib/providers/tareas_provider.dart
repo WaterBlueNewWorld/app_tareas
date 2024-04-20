@@ -7,6 +7,7 @@ class TareasProvider extends ChangeNotifier {
   List<Tarea> listaTareasPendientes = [];
   List<Tarea> listaTareasCompletadas = [];
 
+  /// Funcion para agregar tareas a la lista y DB
   Future<void> agregarTarea(Tarea t, String conexion) async {
     final dbTareas = await openDatabase(conexion);
     Tarea nuevatarea = Tarea(id: null, prioridad: t.prioridad, titulo: t.titulo, completado: t.completado,);
@@ -17,6 +18,7 @@ class TareasProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Funcion para determinar tareas completadas
   Future<void> completarTarea(Tarea t, String conexion) async {
     final dbTareas = await openDatabase(conexion);
 
@@ -37,6 +39,8 @@ class TareasProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// funcion para remover una tarea completada de la lista de completados
+  /// y pasarla a pendientes
   Future<void> descompletarTarea(Tarea t, String conexion) async {
     final dbTareas = await openDatabase(conexion);
 
@@ -57,12 +61,16 @@ class TareasProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Esta funcion inicializa la lista de tareas pendientes y completas de la db
+  /// Usando el modelo se convierte la informacion en objetos y se agregan a la
+  /// lista correspondiente
   void inicializarDatosDb(List<Map<String, dynamic>> pendientes, List<Map<String, dynamic>> completados,) {
     listaTareasPendientes = pendientes.map((e) => Tarea.fromJson(e)).toList();
     listaTareasCompletadas = completados.map((e) => Tarea.fromJson(e)).toList();
     notifyListeners();
   }
 
+  /// funcion para eliminar tareas de la lista especificada y de la db
   void eliminarTarea(Tarea t, String conexion) async {
     final dbTareas = await openDatabase(conexion);
 

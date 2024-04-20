@@ -16,6 +16,9 @@ class TareasPendientes extends StatefulWidget {
   State<TareasPendientes> createState() => _TareasPendientesState();
 }
 
+/// Esta clase implementa un mixin proveido por dart que da la capacidad de
+/// obtener info del el conteo de Tick para widgets que dependan de escuchar
+/// de los ticks de la pantalla activa actual
 class _TareasPendientesState extends State<TareasPendientes> with TickerProviderStateMixin {
   final ScrollController _controlTareasPendientes = ScrollController();
   final ScrollController _controlTareasCompletadas = ScrollController();
@@ -33,6 +36,8 @@ class _TareasPendientesState extends State<TareasPendientes> with TickerProvider
     return Scaffold(
       body: Stack(
         children: [
+          /// Usando un IndexedStack hago que la pantalla de tareas tenga dos
+          /// "niveles" de navegacion siendo "Por hacer" y "Completados respectivamente"
           IndexedStack(
             index: _indiceListaTareas,
             alignment: Alignment.center,
@@ -50,6 +55,8 @@ class _TareasPendientesState extends State<TareasPendientes> with TickerProvider
                             Consumer<TareasProvider>(
                               builder: (ctx, provider, e) {
                                 return Column(
+                                  /// Se genera la lista de tareas si existe alguna obtenida desde la db
+                                  /// si no, aparecera una cuando se cree una nueva
                                   children: List.generate(
                                     provider.listaTareasPendientes.length, (index) {
                                       return Dismissible(
@@ -187,6 +194,7 @@ class _TareasPendientesState extends State<TareasPendientes> with TickerProvider
             child: SizedBox(
               height: 40,
               width: MediaQuery.of(context).size.width,
+              /// TabBar para proveer de navegacion a la lista de tareas
               child: TabBar(
                 controller: _tabController,
                 indicator: Indicador(context: context),

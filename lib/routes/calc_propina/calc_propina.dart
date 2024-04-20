@@ -8,6 +8,12 @@ class CalculadoraPropina extends StatefulWidget {
   State<CalculadoraPropina> createState() => _CalculadoraPropinaState();
 }
 
+/// Esta clase es la que crea la calculadora de propina
+/// usando la calculadora de propina de watchOS cree una calculadora que
+/// ademas de proveer la propina da la cantidad de propina por personas que van
+/// a pagar
+///
+/// Fuera de esto lo demas son simples operaciones matematicas
 class _CalculadoraPropinaState extends State<CalculadoraPropina> {
   final GlobalKey<FormState> llaveForm = GlobalKey<FormState>();
   final TextEditingController cantidadDineroController = TextEditingController();

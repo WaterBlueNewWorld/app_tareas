@@ -33,25 +33,24 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => InformacionUsuario()),
       ],
       builder: (ctx, child) {
-        return ChangeNotifierProvider(
-          create: (_) => InformacionUsuario(),
-          child: Consumer<InformacionUsuario>(
-            builder: (ctx, provider, child) {
-              return MaterialApp(
-                title: 'Flutter Demo',
-                theme: ThemeData(
-                  colorScheme: provider.temaClaroDefault,
-                  useMaterial3: true,
-                ),
-                darkTheme: ThemeData(
-                  colorScheme: provider.temaObscuroDefault,
-                  useMaterial3: true,
-                ),
-                themeMode: ctx.read<InformacionUsuario>().temaActual,
-                home: PaginaPrincipal(dbtareas: tareasdb,),
-              );
-            },
-          ),
+        /// Se crea consumer para obtener informacion acerca del tema de la app
+        /// la cual se guarda en el provider de info usuario
+        return Consumer<InformacionUsuario>(
+          builder: (ctx, provider, child) {
+            return MaterialApp(
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                colorScheme: provider.temaClaroDefault,
+                useMaterial3: true,
+              ),
+              darkTheme: ThemeData(
+                colorScheme: provider.temaObscuroDefault,
+                useMaterial3: true,
+              ),
+              themeMode: ctx.read<InformacionUsuario>().temaActual,
+              home: PaginaPrincipal(dbtareas: tareasdb,),
+            );
+          },
         );
       },
     );

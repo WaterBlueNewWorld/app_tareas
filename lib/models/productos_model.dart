@@ -1,3 +1,5 @@
+
+/// Modelo de productos recibidos desde la RestAPI
 class Productos {
   final List<Product> products;
   final int total;

@@ -13,6 +13,7 @@ class Indicador extends Decoration {
   }
 }
 
+/// Indicador personalizado de indice actual en un tab
 class _CustomBoxPainter extends BoxPainter {
   final BuildContext context;
 

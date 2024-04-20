@@ -26,6 +26,9 @@ class DialogoTarea extends StatefulWidget {
   State<DialogoTarea> createState() => _DialogoTareaState();
 }
 
+/// Dialogo utilizado para la creacion de tareas en la lista de tareas
+/// Este dialogo hace llamadas a la db para escribir los datos si se
+/// decide crear una nueva tarea
 class _DialogoTareaState extends State<DialogoTarea> {
   final TextEditingController _controlTituloTarea = TextEditingController();
   late final Database dbTareas;
