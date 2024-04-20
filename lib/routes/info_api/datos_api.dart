@@ -74,7 +74,7 @@ class _ProductosApiState extends State<ProductosApi> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Image.network(productos.products[index].thumbnail, fit: BoxFit.fill, height: 40, width: 200,),
+                                      Image.network(productos.products[index].thumbnail, fit: BoxFit.fill, height: 110, width: 200,),
                                       Expanded(
                                         child: ListTile(
                                           key: UniqueKey(),
@@ -97,7 +97,7 @@ class _ProductosApiState extends State<ProductosApi> {
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 childAspectRatio: 2,
-                                mainAxisExtent: 120,
+                                mainAxisExtent: 200,
                               ),
                             ),
                           ),

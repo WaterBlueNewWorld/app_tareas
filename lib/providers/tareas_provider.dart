@@ -60,6 +60,7 @@ class TareasProvider extends ChangeNotifier {
   void inicializarDatosDb(List<Map<String, dynamic>> pendientes, List<Map<String, dynamic>> completados,) {
     listaTareasPendientes = pendientes.map((e) => Tarea.fromJson(e)).toList();
     listaTareasCompletadas = completados.map((e) => Tarea.fromJson(e)).toList();
+    notifyListeners();
   }
 
   void eliminarTarea(Tarea t, String conexion) async {

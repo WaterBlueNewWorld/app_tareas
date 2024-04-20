@@ -5,8 +5,9 @@ class InformacionUsuario extends ChangeNotifier {
   String db = "Usuario";
   ThemeMode? _temaApp;
   ColorScheme _temaClaroDefault = const ColorScheme.light();
-  ColorScheme _temaObscuroDefault = const ColorScheme.light();
+  ColorScheme _temaObscuroDefault = const ColorScheme.dark();
 
+  /// p
   ThemeMode get temaActual => _temaApp ?? ThemeMode.light;
   ColorScheme get temaClaroDefault => _temaClaroDefault;
   ColorScheme get temaObscuroDefault => _temaObscuroDefault;

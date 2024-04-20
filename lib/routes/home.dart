@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lista_tareas/providers/informacion_usuario.dart';
 import 'package:lista_tareas/providers/tareas_provider.dart';
 import 'package:lista_tareas/routes/calc_propina/calc_propina.dart';
 import 'package:lista_tareas/routes/info_api/datos_api.dart';
 import 'package:lista_tareas/routes/tareas_pendientes/tareas_pendientes.dart';
+import 'package:lista_tareas/utils/constructor_temas.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -31,28 +33,33 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _indiceStack,
-        alignment: Alignment.center,
-        children: _pantallas,
-      ),
-      bottomNavigationBar: NavigationBar(
-        elevation: 8,
-        //type: BottomNavigationBarType.shifting,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.task), label: "Tareas pendientes"),
-          NavigationDestination(icon: Icon(Icons.calculate), label: "Calculadora"),
-          NavigationDestination(icon: Icon(Icons.api), label: "Rest API"),
-        ],
-        selectedIndex: _indiceStack,
-        indicatorColor: Colors.white,
-        onDestinationSelected: (int i) {
-          setState(() {
-            _indiceStack = i;
-          });
-        },
-      ),
+    return PaletteBuilder(
+      imagen: const AssetImage('lib/assets/images/flores.png'),
+      builder: (ctx) {
+        return Scaffold(
+          body: IndexedStack(
+            index: _indiceStack,
+            alignment: Alignment.center,
+            children: _pantallas,
+          ),
+          bottomNavigationBar: NavigationBar(
+            elevation: 8,
+            //type: BottomNavigationBarType.shifting,
+            destinations: const [
+              NavigationDestination(icon: Icon(Icons.task), label: "Tareas pendientes"),
+              NavigationDestination(icon: Icon(Icons.calculate), label: "Calculadora"),
+              NavigationDestination(icon: Icon(Icons.api), label: "Rest API"),
+            ],
+            selectedIndex: _indiceStack,
+            indicatorColor: Colors.white,
+            onDestinationSelected: (int i) {
+              setState(() {
+                _indiceStack = i;
+              });
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -65,12 +72,15 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     if (res.isEmpty || !(res.first['true'] == 1)) {
       db.execute(
        "CREATE TABLE tareas(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, prioridad TEXT, completado BIT);",
-      );
+      ).whenComplete(() {
+        FlutterNativeSplash.remove();
+      });
     } else {
       pendientes = await db.query('tareas', where: 'completado=?', whereArgs: ['0']);
       completados = await db.query('tareas', where: 'completado=?', whereArgs: ['1']);
       if(mounted) {
         context.read<TareasProvider>().inicializarDatosDb(pendientes, completados);
+        FlutterNativeSplash.remove();
       }
     }
   }

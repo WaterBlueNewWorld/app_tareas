@@ -1,0 +1,18 @@
+flutter_native_splash:
+  color: "#42a5f5"
+  image: lib/assets/images/logo.png
+  android: true
+  ios: true
+  web: true
+  color_web: "#42a5f5"
+  color_dark_web: "#042a49"
+  color_android: "#42a5f5"
+  color_dark_android: "#42a5f5"
+  image_web: lib/assets/images/logo.png
+  image_dark_web: lib/assets/images/logo.png
+  web_image_mode: center
+  android_12:
+    image: lib/assets/images/logo.png
+    icon_background_color: "#ffffff"
+    image_dark: lib/assets/images/logo.png
+    icon_background_color_dark: "#42a5f5"
