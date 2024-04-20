@@ -1,7 +1,10 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:lista_tareas/models/prioridades_model.dart';
-import 'package:lista_tareas/utils/type_extensions.dart';
+import 'package:lista_tareas/providers/informacion_usuario.dart';
+import 'package:lista_tareas/providers/tareas_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../models/tarea_model.dart';
 
@@ -25,6 +28,7 @@ class DialogoTarea extends StatefulWidget {
 
 class _DialogoTareaState extends State<DialogoTarea> {
   final TextEditingController _controlTituloTarea = TextEditingController();
+  late final Database dbTareas;
   late Color _prioridad;
   final GlobalKey<FormState> _formDialogo = GlobalKey<FormState>();
 
@@ -32,6 +36,13 @@ class _DialogoTareaState extends State<DialogoTarea> {
   void initState() {
     super.initState();
     _prioridad = widget.prioridad;
+    inicializar();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    dbTareas.close();
   }
 
   @override
@@ -183,8 +194,10 @@ class _DialogoTareaState extends State<DialogoTarea> {
                     TextButton(
                       onPressed: () async {
                         if (_formDialogo.currentState!.validate()) {
-                          Tarea nuevatarea = Tarea(id: 1, prioridad: _prioridad, titulo: _controlTituloTarea.text, completado: false,);
-                          widget.callback(nuevatarea);
+                          Tarea tarea = Tarea(id: null, titulo: _controlTituloTarea.text, completado: false, prioridad: _prioridad);
+                          context.read<TareasProvider>().agregarTarea(tarea, context.read<InformacionUsuario>().db).whenComplete(() {
+                            Navigator.of(context).pop(true);
+                          });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Campos vacios")));
                         }
@@ -199,6 +212,11 @@ class _DialogoTareaState extends State<DialogoTarea> {
         ),
       )
     );
+  }
+
+  Future<void> inicializar() async {
+    String conexion = context.read<InformacionUsuario>().db;
+    dbTareas = await openDatabase(conexion);
   }
 
   Widget _popItemBuilderColores(BuildContext context, Prioridades? item, bool isSelected) {

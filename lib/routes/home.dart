@@ -1,75 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:lista_tareas/models/prioridades_model.dart';
+import 'package:lista_tareas/providers/informacion_usuario.dart';
 import 'package:lista_tareas/providers/tareas_provider.dart';
-import 'package:lista_tareas/widgets/dialogo_tarea.dart';
+import 'package:lista_tareas/routes/calc_propina/calc_propina.dart';
+import 'package:lista_tareas/routes/info_api/datos_api.dart';
+import 'package:lista_tareas/routes/tareas_pendientes/tareas_pendientes.dart';
 import 'package:provider/provider.dart';
-
-import '../models/tarea_model.dart';
+import 'package:sqflite/sqflite.dart';
 
 class PaginaPrincipal extends StatefulWidget {
-  const PaginaPrincipal({super.key});
+  final String dbtareas;
+  const PaginaPrincipal({super.key, required this.dbtareas});
 
   @override
   State<PaginaPrincipal> createState() => _PaginaPrincipalState();
 }
 
 class _PaginaPrincipalState extends State<PaginaPrincipal> {
-  final ScrollController _controlTareas = ScrollController();
+  final List<Widget> _pantallas = [
+    const TareasPendientes(),
+    const CalculadoraPropina(),
+    const ProductosApi(),
+  ];
+  int _indiceStack = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    inicializacion();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(context: context, builder: (ctx) {
-            return DialogoTarea(
-              titulo: "",
-              prioridad: Colors.blue,
-              callback: (Tarea t) {
-                context.read<TareasProvider>().agregarTarea(t);
-              },
-            );
+      body: IndexedStack(
+        index: _indiceStack,
+        alignment: Alignment.center,
+        children: _pantallas,
+      ),
+      bottomNavigationBar: NavigationBar(
+        elevation: 8,
+        //type: BottomNavigationBarType.shifting,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.task), label: "Tareas pendientes"),
+          NavigationDestination(icon: Icon(Icons.calculate), label: "Calculadora"),
+          NavigationDestination(icon: Icon(Icons.api), label: "Rest API"),
+        ],
+        selectedIndex: _indiceStack,
+        indicatorColor: Colors.white,
+        onDestinationSelected: (int i) {
+          setState(() {
+            _indiceStack = i;
           });
         },
-        child: const Icon(Icons.add),
-      ),
-      body: Stack(
-        children: [Row(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 2,
-              width: 300,
-              child: ListView(
-                controller: _controlTareas,
-                children: [
-                  Column(
-                    children: List.generate(
-                      context.read<TareasProvider>().listaTareasPendientes.length,
-                      (index) {
-                        List<Tarea> tareasPendientes = context.read<TareasProvider>().listaTareasPendientes;
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: 60,
-                          child: Card(
-                            child: Center(
-                              child: ListTile(
-                                leading: Container(width: 15, height: 15, decoration: BoxDecoration(color: tareasPendientes[index].prioridad),),
-                                title: Text(tareasPendientes[index].titulo),
-                                trailing: IconButton(onPressed: () {}, icon: const Icon(Icons.check),),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),],
       ),
     );
+  }
+
+  void inicializacion() async {
+    context.read<InformacionUsuario>().db = widget.dbtareas;
+    final db = await openDatabase(widget.dbtareas);
+    List<Map<String, dynamic>> pendientes;
+    List<Map<String, dynamic>> completados;
+    var res = await db.rawQuery("SELECT true WHERE EXISTS(SELECT name from sqlite_master WHERE type='table' AND name='tareas');");
+    if (res.isEmpty || !(res.first['true'] == 1)) {
+      db.execute(
+       "CREATE TABLE tareas(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, prioridad TEXT, completado BIT);",
+      );
+    } else {
+      pendientes = await db.query('tareas', where: 'completado=?', whereArgs: ['0']);
+      completados = await db.query('tareas', where: 'completado=?', whereArgs: ['1']);
+      if(mounted) {
+        context.read<TareasProvider>().inicializarDatosDb(pendientes, completados);
+      }
+    }
   }
 }
